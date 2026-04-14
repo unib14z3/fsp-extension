@@ -29,6 +29,37 @@ async function getActiveTab() {
   return tab;
 }
 
+function sendMessageToTab(tabId, payload) {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.sendMessage(tabId, payload, () => {
+      if (chrome.runtime.lastError) {
+        const msg = chrome.runtime.lastError.message || '';
+        if (msg.includes('The message port closed before a response was received')) {
+          resolve();
+          return;
+        }
+        reject(new Error(msg));
+        return;
+      }
+      resolve();
+    });
+  });
+}
+
+async function ensureContentScript(tabId) {
+  try {
+    await sendMessageToTab(tabId, { action: 'PING' });
+    return;
+  } catch (err) {
+    if (!err.message.includes('Receiving end does not exist')) throw err;
+  }
+
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    files: ['content_script.js']
+  });
+}
+
 startBtn.addEventListener('click', async () => {
   const tab = await getActiveTab();
   if (!tab || !tab.url.includes('futureskillsprime.in')) {
@@ -47,12 +78,23 @@ startBtn.addEventListener('click', async () => {
   setBadge('running');
   log('Starting automation…');
 
-  chrome.tabs.sendMessage(tab.id, { action: 'START' });
+  try {
+    await ensureContentScript(tab.id);
+    await sendMessageToTab(tab.id, { action: 'START' });
+  } catch (err) {
+    isRunning = false;
+    startBtn.style.display = 'block';
+    stopBtn.style.display  = 'none';
+    setBadge('error');
+    log(`❌ Failed to start: ${err.message}`);
+  }
 });
 
 stopBtn.addEventListener('click', async () => {
   const tab = await getActiveTab();
-  chrome.tabs.sendMessage(tab.id, { action: 'STOP' });
+  try {
+    await sendMessageToTab(tab.id, { action: 'STOP' });
+  } catch (_) {}
   isRunning = false;
   startBtn.style.display = 'block';
   stopBtn.style.display  = 'none';

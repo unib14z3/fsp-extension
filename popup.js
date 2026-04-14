@@ -33,12 +33,7 @@ function sendMessageToTab(tabId, payload) {
   return new Promise((resolve, reject) => {
     chrome.tabs.sendMessage(tabId, payload, () => {
       if (chrome.runtime.lastError) {
-        const msg = chrome.runtime.lastError.message || '';
-        if (msg.includes('The message port closed before a response was received')) {
-          resolve();
-          return;
-        }
-        reject(new Error(msg));
+        reject(new Error(chrome.runtime.lastError.message));
         return;
       }
       resolve();

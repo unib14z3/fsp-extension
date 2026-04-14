@@ -100,11 +100,13 @@ async function tryViewContent(mod, idx) {
   const href = link.href;
   if (href) {
     sendLog(`  → Opening content: ${href.substring(0, 60)}…`);
-    const newTab = window.open(href, '_blank');
-    await sleep(3000);  // Give it a moment to "load"
-    if (newTab) {
-      try { newTab.close(); } catch(e) {}
-      sendLog(`  ✓ Content tab closed (module ${idx + 1})`);
+    const result = await chrome.runtime.sendMessage({ action: 'OPEN_AND_CLOSE_TAB', url: href });
+    if (result?.ok) {
+      sendLog(`  ✓ Opened+closed background tab (module ${idx + 1})`);
+    } else {
+      sendLog(`  ! Background tab flow failed, trying normal click (module ${idx + 1})`);
+      link.click();
+      await sleep(1000);
     }
   } else {
     link.click();

@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "FutureSkills Prime Automation",
+  "version": "1.0",
+  "description": "Auto-enrol, view and complete modules on FutureSkills Prime",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": [
+    "https://www.futureskillsprime.in/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.futureskillsprime.in/*"],
+      "js": ["content_script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

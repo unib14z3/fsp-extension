@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 13px;
+      color: #222;
+      background: #fff;
+      padding: 16px;
+    }
+    h1 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #111;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 14px;
+    }
+    .btn {
+      width: 100%;
+      padding: 9px 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 8px;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    #startBtn  { background: #1a7f5a; color: #fff; }
+    #stopBtn   { background: #c0392b; color: #fff; display: none; }
+    #statusBox {
+      background: #f4f4f4;
+      border-radius: 6px;
+      padding: 8px 10px;
+      min-height: 80px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 11.5px;
+      line-height: 1.6;
+      color: #333;
+      border: 1px solid #ddd;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .status-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .badge.idle    { background: #eee; color: #666; }
+    .badge.running { background: #d4efdf; color: #1a7f5a; }
+    .badge.done    { background: #d6eaf8; color: #1a5276; }
+    .badge.error   { background: #fadbd8; color: #c0392b; }
+    .divider { border: none; border-top: 1px solid #eee; margin: 10px 0; }
+    .row { display: flex; gap: 8px; margin-bottom: 8px; }
+    .stat { flex: 1; background: #f9f9f9; border-radius: 6px; padding: 6px 8px; text-align: center; border: 1px solid #eee; }
+    .stat-num { font-size: 20px; font-weight: 700; color: #111; }
+    .stat-lbl { font-size: 10px; color: #888; margin-top: 1px; }
+    .stat.green .stat-num { color: #1a7f5a; }
+    .stat.red   .stat-num { color: #c0392b; }
+    .stat.gray  .stat-num { color: #555; }
+  </style>
+</head>
+<body>
+  <h1>⚡ FSP Automation</h1>
+  <p class="subtitle">FutureSkills Prime — auto-complete modules</p>
+
+  <span id="badge" class="badge idle">Idle</span>
+
+  <div class="row">
+    <div class="stat green"><div id="doneCount" class="stat-num">0</div><div class="stat-lbl">Completed</div></div>
+    <div class="stat gray"><div id="skipCount" class="stat-num">0</div><div class="stat-lbl">Skipped</div></div>
+    <div class="stat red"><div id="failCount" class="stat-num">0</div><div class="stat-lbl">Failed</div></div>
+  </div>
+
+  <button id="startBtn" class="btn">▶ Start Automation</button>
+  <button id="stopBtn"  class="btn">■ Stop</button>
+
+  <hr class="divider">
+  <p class="status-label">Log</p>
+  <div id="statusBox">Waiting to start…</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
